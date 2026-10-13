@@ -9,10 +9,10 @@ engine = create_async_engine(
     connect_args={"check_same_thread": False},
 )
 
-AsyncSessionLocal = async_sessionmaker(
+AsyncSessionLocal = async_sessionmaker(   #  Session Local is a transaction with the db
     engine,
     class_=AsyncSession,
-    expire_on_commit=False                 #  Session Local is a transaction with the db
+    expire_on_commit=False           # Helps with issues of expired objects after commit (recommend for async)      
 )
 
 
