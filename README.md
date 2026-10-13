@@ -1,4 +1,4 @@
-FastAPI Blog
+# FastAPI Blog
 
 A blog application built with FastAPI while following Corey Schafer's Python FastAPI Tutorials series on YouTube. It has a JSON API for users and posts, plus server-rendered pages using Jinja2 templates.
 
