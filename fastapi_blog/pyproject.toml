@@ -1,0 +1,18 @@
+[project]
+name = "fastapi-blog"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "fastapi[standard]>=0.141.1",
+    "jinja2>=3.1.6",
+    "scalar-fastapi>=1.8.2",
+    "sqlalchemy>=2.0.52",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+]
