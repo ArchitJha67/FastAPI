@@ -25,12 +25,6 @@ from database import Base, engine, get_db
 from routers import posts, users
 
 
-"""
-fastapi is based on starlette so when we raise an exception its starlette that raises the 404 error 
-we can match manual error by fastapi but miss the others hence we use starlette
-"""
-
-
 # Base.metadata.create_all(bind=engine) # looks at all models that inherit from base and creates table if they dont exist
 # Lifespan ----> Idempotent (can run multiple times with no side affect)
 @asynccontextmanager
@@ -53,8 +47,12 @@ app.mount("/media", StaticFiles(directory="media"), name="media")
 
 templates = Jinja2Templates(directory="templates")
 
-app.include_router(users.router, prefix="/api/users",tags=["users"]) # app.include_router connects router to our app
-app.include_router(posts.router, prefix="/api/posts",tags=["posts"]) # prefix param adds that prefix to our link 
+app.include_router(
+    users.router, prefix="/api/users", tags=["users"]
+)  # app.include_router connects router to our app
+app.include_router(
+    posts.router, prefix="/api/posts", tags=["posts"]
+)  # prefix param adds that prefix to our link
 #                                                        tag param organises the docs page and makes collapsable user and post section
 
 
@@ -149,6 +147,19 @@ async def register_page(request: Request):
         {"title": "Register"},
     )
 
+
+@app.get("/account", include_in_schema=False)
+async def account_page(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "account.html",
+        {"title": "Account"},
+    )
+
+"""
+fastapi is based on starlette so when we raise an exception its starlette that raises the 404 error 
+we can match manual error by fastapi but miss the others hence we use starlette
+"""
 
 ## StarletteHTTPException Handler
 @app.exception_handler(StarletteHTTPException)
