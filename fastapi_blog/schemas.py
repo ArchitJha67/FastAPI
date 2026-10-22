@@ -29,7 +29,6 @@ class UserPrivate(UserPublic):
 class UserUpdate(BaseModel):
     username: str | None = Field(default=None, min_length=1, max_length=50)
     email: EmailStr | None = Field(default=None, max_length=120)
-    image_file: str | None = Field(default=None, min_length=1, max_length=200)
 
 
 class Token(BaseModel):
@@ -66,3 +65,11 @@ model_config=ConfigDict(from_attributes=True)
 generally we access the values if dict using post['title'] but the line above makes pydantic understand
 the dot notations as well like post.title
 """
+
+## Paginated Post Response Schema
+class PaginatedPostsResponse(BaseModel):
+    posts: list[PostResponse]
+    total: int
+    skip: int
+    limit: int
+    has_more: bool
