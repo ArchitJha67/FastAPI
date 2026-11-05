@@ -1,18 +1,17 @@
+import hashlib
+import secrets
 from datetime import UTC, datetime, timedelta
+from typing import Annotated
 
 import jwt
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
-
-from config import settings
-
-from typing import Annotated
-from fastapi import Depends, HTTPException, status
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import models
+from config import settings
 from database import get_db
 
 password_hash = PasswordHash.recommended()
@@ -20,13 +19,19 @@ password_hash = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/token")
 
 
-def hash_passwrod(password: str) -> str:
+def hash_password(password: str) -> str:
     return password_hash.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_hash.verify(plain_password, hashed_password)
     # Encrypting is reversible Hashing isnt
+
+def generate_reset_token() -> str:
+    return secrets.token_urlsafe(32) 
+
+def hash_reset_token(token: str) -> str:                # this function takes a token and returns its sha256 hash we dont use argon2 here
+    return hashlib.sha256(token.encode()).hexdigest()  # becuase passwords are weak and tokens are already random so not eary to predict them  
 
 
 ## create_access_token

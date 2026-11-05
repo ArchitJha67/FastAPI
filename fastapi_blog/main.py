@@ -1,30 +1,24 @@
+from contextlib import asynccontextmanager
 from typing import Annotated
 
-from contextlib import asynccontextmanager
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-
-from fastapi import FastAPI, Request, HTTPException, status, Depends
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
-from starlette.exceptions import HTTPException as StarletteHTTPException
-
-from sqlalchemy import select, func
+from scalar_fastapi import get_scalar_api_reference
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
-from scalar_fastapi import get_scalar_api_reference
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import models
-from database import Base, engine, get_db
-
-from routers import posts, users
-
 from config import settings
+from database import Base, engine, get_db
+from routers import posts, users
 
 
 # Base.metadata.create_all(bind=engine) # looks at all models that inherit from base and creates table if they dont exist
@@ -187,6 +181,26 @@ async def account_page(request: Request):
         "account.html",
         {"title": "Account"},
     )
+
+
+@app.get("/forgot-password", include_in_schema=False)
+async def forgot_password_page(request: Request):
+    return templates.TemplateResponse(
+        request,
+        "forgot_password.html",
+        {"title": "Forgot Password"},
+    )
+
+
+@app.get("/reset-password", include_in_schema=False)
+async def reset_password_page(request: Request):
+    response = templates.TemplateResponse(
+        request,
+        "reset_password.html",
+        {"title": "Reset Password"},
+    )
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
 
 
 """
