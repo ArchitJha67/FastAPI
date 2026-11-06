@@ -17,20 +17,26 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 import models
 from config import settings
-from database import Base, engine, get_db
+from database import engine, get_db
 from routers import posts, users
-
 
 # Base.metadata.create_all(bind=engine) # looks at all models that inherit from base and creates table if they dont exist
 # Lifespan ----> Idempotent (can run multiple times with no side affect)
+#@asynccontextmanager
+#async def lifespan(_app: FastAPI):
+    # Starup
+#    async with engine.begin() as conn:  # engine.begin() to get async connection
+#        await conn.run_sync(
+#            Base.metadata.create_all     # create_all() creates all tables in the database that are defined by the models that inherit from Base. It checks if the tables already exist and only creates them if they don't. This is useful for setting up the initial database schema when the application starts.
+#        )  # run_sync letus run the synchronous create all method inside asyn context
+#    yield  # application runs at yield
+    # Shutdown
+#    await engine.dispose()  # creat all is a creation system not a migration system so we dont want to drop tables on shutdown. Dispose closes the connection pool and releases any resources associated with the engine.
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    # Starup
-    async with engine.begin() as conn:  # engine.begin() to get async connection
-        await conn.run_sync(
-            Base.metadata.create_all
-        )  # run_sync letus run the synchronous create all method inside asyn context
-    yield  # application runs at yield
+    yield
     # Shutdown
     await engine.dispose()
 

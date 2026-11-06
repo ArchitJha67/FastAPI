@@ -8,6 +8,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",  # tells it to read configuration from a file named .env.
     )  # "utf-8" specifies how to read that file's text.
 
+    database_url: str  # automatically loaded from .env file
+
     secret_key: SecretStr  # used to sign your JWT tokens.
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30

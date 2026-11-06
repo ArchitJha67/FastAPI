@@ -55,6 +55,7 @@ class Post(Base):
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
     )
+    likes: Mapped[int] =mapped_column(Integer, default=0, server_default="0")  # default=0 sets the default value of likes to 0 when a new post is created. server_default="0" sets the default value of likes to 0 at the database level, ensuring that if a post is created directly in the database without going through the application, it will still have a default value of 0 for likes.
 
     author: Mapped[User] = relationship(back_populates="posts")  # backpopulate many to one helps access the author of post
 
